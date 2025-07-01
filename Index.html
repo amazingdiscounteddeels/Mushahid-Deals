@@ -1,0 +1,631 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affiliate Marketplace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS Reset and Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        :root {
+            --primary-color: #4a6bff;
+            --secondary-color: #f8f9fa;
+            --text-color: #333;
+            --light-text: #777;
+            --border-color: #e1e1e1;
+            --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            color: var(--text-color);
+            line-height: 1.6;
+            background-color: #f5f5f5;
+        }
+        
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        
+        /* Navigation */
+        nav {
+            background-color: white;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+        }
+        
+        .logo {
+            font-weight: 700;
+            font-size: 1.5rem;
+            color: var(--primary-color);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+        }
+        
+        .nav-links a {
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+        
+        .hamburger {
+            display: none;
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+        
+        /* Main Content */
+        main {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            color: var(--primary-color);
+        }
+        
+        /* Products Grid */
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 2rem;
+            padding: 1rem;
+        }
+        
+        .product-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: transform 0.3s;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .product-image-container {
+            position: relative;
+            padding-top: 100%; /* Square aspect ratio */
+            overflow: hidden;
+        }
+        
+        .main-product-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.3s;
+        }
+        
+        .thumbnail-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 0.5rem;
+            padding: 0.5rem;
+        }
+        
+        .thumbnail {
+            aspect-ratio: 1;
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid var(--border-color);
+            transition: border-color 0.3s;
+        }
+        
+        .thumbnail:hover {
+            border-color: var(--primary-color);
+        }
+        
+        .product-info {
+            padding: 1.5rem;
+        }
+        
+        .product-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .product-description {
+            color: var(--light-text);
+            margin-bottom: 1rem;
+            max-height: 60px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        
+        .product-description.expanded {
+            max-height: 500px;
+        }
+        
+        .read-more {
+            color: var(--primary-color);
+            font-weight: 500;
+            cursor: pointer;
+            display: inline-block;
+            margin-top: 0.5rem;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+        
+        .btn {
+            padding: 0.6rem 1rem;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            flex: 1;
+            text-align: center;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary-color);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background-color: #3a56d4;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+        }
+        
+        /* Sections */
+        .section {
+            padding: 4rem 1rem;
+            min-height: 50vh;
+        }
+        
+        .section:nth-child(even) {
+            background-color: var(--secondary-color);
+        }
+        
+        /* About, Contact, Privacy sections */
+        .content-container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+        }
+        
+        /* Footer */
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 2rem 1rem;
+            font-size: 0.9rem;
+        }
+        
+        /* Mobile Styles */
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 70px;
+                left: 0;
+                width: 100%;
+                background-color: white;
+                flex-direction: column;
+                align-items: center;
+                padding: 1rem 0;
+                gap: 1rem;
+                box-shadow: var(--shadow);
+                transform: translateY(-150%);
+                transition: transform 0.3s ease;
+                z-index: 99;
+            }
+            
+            .nav-links.active {
+                transform: translateY(0);
+            }
+            
+            .hamburger {
+                display: block;
+            }
+            
+            .products-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        /* Toast notification */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: #333;
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 4px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            z-index: 1000;
+        }
+        
+        .toast.show {
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">AffiliateHub</div>
+            <div class="hamburger" id="hamburger">
+                <i class="fas fa-bars"></i>
+            </div>
+            <div class="nav-links" id="navLinks">
+                <a href="#home">Home</a>
+                <a href="#products">Products</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+                <a href="#privacy">Privacy Policy</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section">
+            <h1 class="section-title">Welcome to AffiliateHub</h1>
+            <div class="content-container">
+                <p>Discover amazing products and get the best deals through our affiliate marketplace. We've curated a selection of top-quality items just for you.</p>
+            </div>
+        </section>
+        
+        <!-- Products Section -->
+        <section id="products" class="section">
+            <h2 class="section-title">Featured Products</h2>
+            <div class="products-grid" id="productsGrid">
+                <!-- Product cards will be dynamically inserted here -->
+            </div>
+        </section>
+        
+        <!-- About Section -->
+        <section id="about" class="section">
+            <h2 class="section-title">About Us</h2>
+            <div class="content-container">
+                <p>We're a team of passionate individuals dedicated to bringing you the best products at the best prices through our affiliate partnerships.</p>
+                <p>Our mission is to simplify your shopping experience by providing honest reviews and direct links to purchase products from trusted retailers.</p>
+            </div>
+        </section>
+        
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <h2 class="section-title">Contact Us</h2>
+            <div class="content-container">
+                <p>Have questions or suggestions? We'd love to hear from you!</p>
+                <p>Email: contact@affiliatehub.example.com</p>
+                <p>Phone: (123) 456-7890</p>
+            </div>
+        </section>
+        
+        <!-- Privacy Policy Section -->
+        <section id="privacy" class="section">
+            <h2 class="section-title">Privacy Policy</h2>
+            <div class="content-container">
+                <p>We respect your privacy and are committed to protecting your personal data. This privacy policy will inform you about how we look after your personal data when you visit our website.</p>
+                <p>We may use affiliate links that earn us a commission when you make a purchase, at no additional cost to you. We only recommend products we genuinely believe in.</p>
+            </div>
+        </section>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <p>Disclaimer: We are a participant in various affiliate programs which compensate us for referring traffic and business to partner sites.</p>
+    </footer>
+    
+    <!-- Toast Notification -->
+    <div class="toast" id="toast">Link copied to clipboard!</div>
+    
+    <script>
+        // Sample product data (in a real scenario, this might come from a JSON file)
+        const products = [
+            {
+                id: 'prod1',
+                title: 'Wireless Bluetooth Headphones',
+                description: 'Experience crystal-clear sound with these premium wireless headphones. Featuring active noise cancellation, 30-hour battery life, and comfortable over-ear design. Perfect for music lovers and frequent travelers. The headphones come with a built-in microphone for hands-free calls and support Bluetooth 5.0 for seamless connectivity.',
+                images: [
+                    'https://via.placeholder.com/600/771796',
+                    'https://via.placeholder.com/300/771796',
+                    'https://via.placeholder.com/300/0000FF',
+                    'https://via.placeholder.com/300/00FF00',
+                    'https://via.placeholder.com/300/FF0000'
+                ],
+                affiliateLink: 'https://www.example.com/affiliate/headphones'
+            },
+            {
+                id: 'prod2',
+                title: 'Smart Fitness Tracker',
+                description: 'Monitor your health and fitness with this advanced smart tracker. Tracks steps, calories, heart rate, and sleep patterns. Water-resistant design with 7-day battery life. Syncs with your smartphone to provide detailed analytics and notifications. Perfect for anyone looking to improve their fitness and health awareness.',
+                images: [
+                    'https://via.placeholder.com/600/24f355',
+                    'https://via.placeholder.com/300/24f355',
+                    'https://via.placeholder.com/300/0000FF',
+                    'https://via.placeholder.com/300/00FF00',
+                    'https://via.placeholder.com/300/FF0000'
+                ],
+                affiliateLink: 'https://www.example.com/affiliate/tracker'
+            },
+            {
+                id: 'prod3',
+                title: 'Portable Coffee Maker',
+                description: 'Brew your favorite coffee anywhere with this compact portable coffee maker. Uses standard coffee pods, heats water to optimal temperature, and brews in under a minute. USB rechargeable with 10-cup capacity per charge. Perfect for office use, travel, or camping. Includes a travel mug that fits directly under the spout.',
+                images: [
+                    'https://via.placeholder.com/600/d32776',
+                    'https://via.placeholder.com/300/d32776',
+                    'https://via.placeholder.com/300/0000FF',
+                    'https://via.placeholder.com/300/00FF00',
+                    'https://via.placeholder.com/300/FF0000'
+                ],
+                affiliateLink: 'https://www.example.com/affiliate/coffee'
+            },
+            {
+                id: 'prod4',
+                title: 'Ergonomic Office Chair',
+                description: 'Work in comfort with this ergonomic office chair designed for all-day support. Features adjustable height, lumbar support, tilt mechanism, and breathable mesh back. Rated for 8+ hours of daily use. The chair comes with a 5-year warranty and is available in multiple colors to match your office decor.',
+                images: [
+                    'https://via.placeholder.com/600/f66b97',
+                    'https://via.placeholder.com/300/f66b97',
+                    'https://via.placeholder.com/300/0000FF',
+                    'https://via.placeholder.com/300/00FF00',
+                    'https://via.placeholder.com/300/FF0000'
+                ],
+                affiliateLink: 'https://www.example.com/affiliate/chair'
+            },
+            {
+                id: 'prod5',
+                title: '4K Action Camera',
+                description: 'Capture your adventures in stunning 4K resolution with this compact action camera. Waterproof up to 30m, includes image stabilization, and supports 120fps slow motion. Comes with multiple mounting accessories for bikes, helmets, and more. The package includes two rechargeable batteries and a waterproof case for underwater filming.',
+                images: [
+                    'https://via.placeholder.com/600/56a8c2',
+                    'https://via.placeholder.com/300/56a8c2',
+                    'https://via.placeholder.com/300/0000FF',
+                    'https://via.placeholder.com/300/00FF00',
+                    'https://via.placeholder.com/300/FF0000'
+                ],
+                affiliateLink: 'https://www.example.com/affiliate/camera'
+            },
+            {
+                id: 'prod6',
+                title: 'Wireless Charging Pad',
+                description: 'Charge your Qi-compatible devices effortlessly with this fast wireless charging pad. Supports up to 15W fast charging for compatible devices, with built-in temperature control for safe charging. Non-slip surface keeps your device in place. The sleek design fits perfectly on any nightstand or desk, with an LED indicator to show charging status.',
+                images: [
+                    'https://via.placeholder.com/600/b0f7cc',
+                    'https://via.placeholder.com/300/b0f7cc',
+                    'https://via.placeholder.com/300/0000FF',
+                    'https://via.placeholder.com/300/00FF00',
+                    'https://via.placeholder.com/300/FF0000'
+                ],
+                affiliateLink: 'https://www.example.com/affiliate/charger'
+            }
+        ];
+        
+        // DOM Elements
+        const productsGrid = document.getElementById('productsGrid');
+        const navLinks = document.getElementById('navLinks');
+        const hamburger = document.getElementById('hamburger');
+        const toast = document.getElementById('toast');
+        
+        // Mobile menu toggle
+        hamburger.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+        });
+        
+        // Close mobile menu when a link is clicked
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+            });
+        });
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 70,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update URL without page reload
+                    history.pushState(null, null, targetId);
+                }
+            });
+        });
+        
+        // Generate product cards
+        function renderProducts() {
+            productsGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'product-card';
+                productCard.id = product.id;
+                
+                productCard.innerHTML = `
+                    <div class="product-image-container">
+                        <img src="${product.images[0]}" alt="${product.title}" class="main-product-image" id="mainImage-${product.id}">
+                    </div>
+                    <div class="thumbnail-container">
+                        ${product.images.slice(0, 4).map((img, index) => `
+                            <img src="${index === 0 ? img.replace('600', '300') : img}" 
+                                 alt="Thumbnail ${index + 1}" 
+                                 class="thumbnail" 
+                                 onclick="changeMainImage('${product.id}', '${img.replace('600', '600')}')">
+                        `).join('')}
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${product.title}</h3>
+                        <div class="product-description" id="desc-${product.id}">
+                            ${product.description.split(' ').slice(0, 20).join(' ')}...
+                        </div>
+                        <span class="read-more" onclick="toggleDescription('${product.id}')">Read More</span>
+                        <div class="button-group">
+                            <a href="${product.affiliateLink}" target="_blank" class="btn btn-primary">See Deals</a>
+                            <button class="btn btn-secondary" onclick="copyProductLink('${product.id}')">Copy Link</button>
+                        </div>
+                    </div>
+                `;
+                
+                productsGrid.appendChild(productCard);
+            });
+        }
+        
+        // Change main product image when thumbnail is clicked
+        window.changeMainImage = function(productId, newImageUrl) {
+            const mainImage = document.getElementById(`mainImage-${productId}`);
+            if (mainImage) {
+                mainImage.src = newImageUrl;
+            }
+        };
+        
+        // Toggle product description expansion
+        window.toggleDescription = function(productId) {
+            const descElement = document.getElementById(`desc-${productId}`);
+            const isExpanded = descElement.classList.contains('expanded');
+            
+            if (isExpanded) {
+                descElement.classList.remove('expanded');
+                // Find the read more button and change text
+                const readMoreBtn = descElement.nextElementSibling;
+                if (readMoreBtn && readMoreBtn.classList.contains('read-more')) {
+                    readMoreBtn.textContent = 'Read More';
+                }
+            } else {
+                descElement.classList.add('expanded');
+                // Find the read more button and change text
+                const readMoreBtn = descElement.nextElementSibling;
+                if (readMoreBtn && readMoreBtn.classList.contains('read-more')) {
+                    readMoreBtn.textContent = 'Read Less';
+                    // Scroll the description into view if it's not fully visible
+                    descElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+                
+                // Ensure full description is loaded
+                const product = products.find(p => p.id === productId);
+                if (product) {
+                    descElement.innerHTML = product.description;
+                }
+            }
+        };
+        
+        // Copy product link to clipboard
+        window.copyProductLink = function(productId) {
+            const productLink = `${window.location.origin}${window.location.pathname}#products?product=${productId}`;
+            
+            navigator.clipboard.writeText(productLink).then(() => {
+                showToast('Link copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                // Fallback for browsers that don't support clipboard API
+                const textarea = document.createElement('textarea');
+                textarea.value = productLink;
+                document.body.appendChild(textarea);
+                textarea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textarea);
+                showToast('Link copied to clipboard!');
+            });
+        };
+        
+        // Show toast notification
+        function showToast(message) {
+            toast.textContent = message;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+        
+        // Check URL for product parameter and scroll to it
+        function checkForProductInUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = urlParams.get('product');
+            
+            if (productId) {
+                // First, render the products
+                renderProducts();
+                
+                // Then scroll to the product
+                setTimeout(() => {
+                    const productElement = document.getElementById(productId);
+                    if (productElement) {
+                        productElement.scrollIntoView({ behavior: 'smooth' });
+                        
+                        // Optionally highlight the product
+                        productElement.style.boxShadow = '0 0 0 2px var(--primary-color)';
+                        setTimeout(() => {
+                            productElement.style.boxShadow = '';
+                        }, 3000);
+                    }
+                }, 100);
+            } else {
+                renderProducts();
+            }
+        }
+        
+        // Initialize the page
+        checkForProductInUrl();
+        
+        // Handle back/forward navigation
+        window.addEventListener('popstate', () => {
+            checkForProductInUrl();
+        });
+    </script>
+</body>
+</html>
